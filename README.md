@@ -42,4 +42,4 @@ To obtain a list of all the honeypot folder locations, use the “-status” arg
 Using no argument, an unknown argument or the “-help” argument, the help menu will be displayed. This also provides information about the possible arguments.
 
 ## Questions, bugs and feedback
-If you’ve got a question, a bug report or feedback, please send me an e-mail on [inf][at][maxkersten[dot][nl] and I’ll get back to you! 
+If you’ve got a question, a bug report or feedback, please send me an e-mail on [info][at][maxkersten[dot][nl] and I’ll get back to you! 
