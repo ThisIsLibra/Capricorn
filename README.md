@@ -18,6 +18,8 @@ For those unfamiliar with the commands: mkdir stands for ‘make directory’ on
 
 See the “-install” argument for the installation of Capricorn after the previous step has been successfully executed.
 
+A download link to the JAR can be found in this repository, which is located at dist/Capricorn.jar in the repository.
+
 ### -guard
 The guard argument will start the monitoring process. The honeypot folders are monitored and a change in these folders will cause your computer to shut down.
 
