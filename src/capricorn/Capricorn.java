@@ -25,7 +25,7 @@ package capricorn;
  */
 public class Capricorn {
 
-    private static final String VERSION = "1.0 (stable release)";
+    private static final String VERSION = "1.1 (stable release)";
 
     /**
      * Using the argument(s), Capricorn will execute specific tasks. If the
@@ -89,9 +89,9 @@ public class Capricorn {
      * The repair function empties the honeypots and fills them again.
      */
     private static void repair() {
-        System.out.println("[*]The bees are repairing the honeypots. Please give them a minute.");
+        System.out.println("[+]The bees are repairing the honeypots. Please give them a minute.");
         HoneypotManager honeypotManager = new HoneypotManager(Arguments.REPAIR, null);
-        System.out.println("[*]The honeypots have succesfully been repaired! The bees can now guard your system again.");
+        System.out.println("[+]The honeypots have succesfully been repaired! The bees can now guard your system again.");
     }
 
     /**
@@ -99,9 +99,9 @@ public class Capricorn {
      * deletes the honeypot folders
      */
     private static void uninstall() {
-        System.out.println("[*]Emptying the honeypots and removing the honeypot folders");
+        System.out.println("[+]Emptying the honeypots and removing the honeypot folders");
         HoneypotManager honeypotManager = new HoneypotManager(Arguments.UNINSTALL, null);
-        System.out.println("[*]Uninstalling is now complete, Capricorn's honeypots have been removed from the system.");
+        System.out.println("[+]Uninstalling is now complete, Capricorn's honeypots have been removed from the system.");
     }
 
     /**
@@ -109,9 +109,9 @@ public class Capricorn {
      * honeypot files
      */
     private static void install() {
-        System.out.println("[*]Setting up the honeypots. Bees can easily be distracted, so give them a minute.");
+        System.out.println("[+]Setting up the honeypots. Bees can easily be distracted, so give them a minute.");
         HoneypotManager honeypotManager = new HoneypotManager(Arguments.INSTALL, null);
-        System.out.println("[*]The bees have succesfully filled the honeypots!");
+        System.out.println("[+]The bees have succesfully filled the honeypots!");
     }
 
     /**
@@ -124,7 +124,7 @@ public class Capricorn {
      * @param fileExtension the file extension used to scan with
      */
     private static void scan(String fileExtension) {
-        System.out.println("[*]Scanning for encrypted files in the honeypot folders \n");
+        System.out.println("[+]Scanning for encrypted files in the honeypot folders \n");
         HoneypotManager honeypotManager = new HoneypotManager(Arguments.SCAN, fileExtension);
     }
 
@@ -134,7 +134,7 @@ public class Capricorn {
      * that needs to be called to start the monitoring process
      */
     private static void guard() {
-        System.out.println("[*]The guards are spread out and are will alert the hive if there is danger ahead! You can continue to work safely!");
+        System.out.println("[+]The guards are spread out and are will alert the hive if there is danger ahead! You can continue to work safely!");
         HoneypotManager honeypotManager = new HoneypotManager(Arguments.GUARD, null);
     }
 

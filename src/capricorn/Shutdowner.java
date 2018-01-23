@@ -49,6 +49,8 @@ public class Shutdowner {
                 pr = rt.exec("shutdown now"); //The halt option needs root, which works faster on distirbutions like Kali where everything runs as root. On other Linux systems, the shutdown system needs to be used.
             }
         } catch (IOException e) {
+            //The user is notified about the failure to shut down and the user is requested to power off the machine as quick as possible
+            System.out.println("[+]URGENT WARNING: Capricorn detected changes in the honeypot folders but failed to initiate the shutdown of the machine. The shutdown process is restarted. Please shut down your machine manually to make sure the device is shut down.");
             //If the system doesn't shut down, we have to try again
             shutdown();
         }

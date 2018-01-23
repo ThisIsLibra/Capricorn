@@ -18,7 +18,9 @@ package capricorn;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.nio.file.Path;
@@ -101,7 +103,7 @@ public class Utilities {
     }
 
     /**
-     * Get al the user specific directories
+     * Get all the user specific directories
      *
      * @return a list with Paths of the user specific directories
      */
@@ -158,7 +160,7 @@ public class Utilities {
 
     /**
      *
-     * @param fileContent the content which should be written to the file
+     * @param fileContent the content which should be written to end of the file
      * @param pwd The directory in which the file should be placed. pwd is short
      * for 'print working directory' (similar to the bash command).
      * @param outputName the name of the file which is written in pwd
@@ -179,12 +181,41 @@ public class Utilities {
     }
 
     /**
+     *
+     * @param fileContent the byte[] to be written
+     * @param pwd The directory in which the file should be placed. pwd is short
+     * for 'print working directory' (similar to the bash command).
+     * @param outputName the name of the file which is written in pwd
+     * @return true if the content is written, false if the array which contains
+     * the content is null or if an error occurred.
+     */
+    public static boolean writeByteArray(byte[] fileContent, String pwd, String outputName) {
+        if (fileContent == null) {
+            return false;
+        }
+        Path path = Paths.get(pwd + Utilities.getFileSeparator() + outputName);
+        try {
+            OutputStream os = new FileOutputStream(path.toFile());
+            os.write(fileContent);
+            os.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Empty the honeypot folders
      */
     public static void emptyHoneypots() {
         File folder;
         File[] listOfFiles;
-        for (Path path : Utilities.getDirectories(false)) {
+        double total = getDirectories(false).size();
+        double currentHoneypot = 0;
+        double percentage;
+        for (Path path : getDirectories(false)) {
+            //Notify the user of the removal in the files in the honeypot directories
+            System.out.println("[+]Emptying '" + path.toString() + "'!");
             folder = path.toFile();
             listOfFiles = folder.listFiles();
             for (int i = 0; i < listOfFiles.length; i++) {
@@ -192,6 +223,12 @@ public class Utilities {
                     listOfFiles[i].delete();
                 }
             }
+            //Add one to the count of honeypots that has been emptied
+            currentHoneypot++;
+            //Calculate the progress percentage
+            percentage = currentHoneypot / total * 100;
+            //Show the progress to the user, the percentage is casted as an int to only show whole percentages
+            System.out.println("[+]Progress: " + (int) percentage + "%\n");
         }
     }
 
@@ -199,8 +236,19 @@ public class Utilities {
      * Remove the honeypot folders
      */
     public static void removeHoneypotFolders() {
+        double total = getDirectories(false).size();
+        double currentHoneypot = 0;
+        double percentage;
         for (Path path : Utilities.getDirectories(false)) {
+            //Notify the user of the removal of the honeypot directories
+            System.out.println("[+]Removing '" + path.toString() + "'!");
             path.toFile().delete();
+            //Add one to the count of honeypots that has been removed
+            currentHoneypot++;
+            //Calculate the progress percentage
+            percentage = currentHoneypot / total * 100;
+            //Show the progress to the user, the percentage is casted as an int to only show whole percentages
+            System.out.println("[+]Progress: " + (int) percentage + "%\n");
         }
     }
 
@@ -233,8 +281,8 @@ public class Utilities {
         try {
             file.mkdir();
         } catch (SecurityException se) {
-            System.out.println("[*]Unable to create the honeypot directory at " + path.toString());
-            System.out.println("[*]Run Capricorn with the correct privilege to write in the directory. Capricorn will now exit.");
+            System.out.println("[+]Unable to create the honeypot directory at " + path.toString());
+            System.out.println("[+]Run Capricorn with the correct privilege to write in the directory. Capricorn will now exit.");
             System.exit(1);
         }
     }

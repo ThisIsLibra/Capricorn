@@ -18,6 +18,8 @@ package capricorn;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The library functions as a database for Capricorn
@@ -599,8 +601,8 @@ public class Library {
         extensions.add(".zsh");
         return extensions;
     }
-
 //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="getFileContentList">
     /**
      * Using word lists from https://www.world-english.org I created this list
@@ -1155,17 +1157,33 @@ public class Library {
     }
 //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="getFileHeaderList">
     /**
-     * In future updates, file headers might be included in the files. Using the
-     * same technique as the extensions and the content of files, these headers
-     * are saved in a single function and returned in a list.
+     * The keys in the map is the extension (including the dot). Each
+     * corresponding value is a header. Testing if there is a header present can
+     * be done with the 'get' method. The parameter that needs to be supplied is
+     * the key. The returned value is the header if there is any, otherwise the
+     * value is null.
      *
-     * @return the list of file headers
+     * @return a map with a key and value pair. Each key is an extension
+     * (including the dot). Each value is the header of said extension.
      */
-    public static List<String> getHeaderList() {
-        List<String> headers = new ArrayList<>();
-        headers.add("");
-        return headers;
+    public static Map<String, byte[]> getHeaderMap() {
+        Map<String, byte[]> output = new HashMap<>();
+
+        //Entry for ZIP
+        String key = ".zip";
+        byte[] value = new byte[4];
+        //Header (hexadecimal): 50 4B 07 08
+        value[0] = 0x50;
+        value[1] = 0x4B;
+        value[2] = 0x07;
+        value[3] = 0x08;
+        //Add entry to the map
+        output.put(key, value);
+
+        return output;
     }
+    //</editor-fold>
 
 }

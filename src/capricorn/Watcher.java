@@ -66,8 +66,8 @@ public class Watcher {
         try {
             watcher = FileSystems.getDefault().newWatchService();
         } catch (IOException ex) {
-            System.out.println("[*]An error occurred during the initialisation of the filesystem watcher. Therefore Capricorn can not function as intended, resulting in the termination of the process.");
-            System.out.println("[*]Capricorn will now exit");
+            System.out.println("[+]An error occurred during the initialisation of the filesystem watcher. Therefore Capricorn can not function as intended, resulting in the termination of the process.");
+            System.out.println("[+]Capricorn will now exit");
             System.exit(1);
         }
         shutdowner = new Shutdowner();
@@ -107,7 +107,7 @@ public class Watcher {
                 //sleep for 50 miliseconds. In Linux the system doesn't push
                 //the changes to the API, so Java pulls the results. 
                 //If there is no delay, the CPU usage of the Java program
-                //is extremely high (averaging 90% CPU on test VMs)
+                //is extremely high (averaging 90% CPU during tests on virtual machines)
                 if (!isWindows) {
                     Thread.sleep(50);
                 }
@@ -152,8 +152,8 @@ public class Watcher {
                 directory.register(watcher, StandardWatchEventKinds.ENTRY_CREATE,
                         StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
             } catch (IOException ex) {
-                System.out.println("[*]One or more directories could not be added to the watcher, to reinstall the direcotries run Capricorn again with the correct privileges.");
-                System.out.println("[*]Capricorn will now exit");
+                System.out.println("[+]One or more directories could not be added to the watcher, to reinstall the direcotries run Capricorn again with the correct privileges.");
+                System.out.println("[+]Capricorn will now exit");
                 System.exit(0);
             }
         }

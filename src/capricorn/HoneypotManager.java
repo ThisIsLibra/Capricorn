@@ -53,9 +53,7 @@ public class HoneypotManager {
                 guard();
                 break;
             case SCAN:
-                if (fileExtension != null) {
-                    scan(fileExtension);
-                }
+                scan(fileExtension);
                 break;
             case STATUS:
                 status();
@@ -69,7 +67,7 @@ public class HoneypotManager {
      * directories are shown to the user
      */
     private static void status() {
-        System.out.println("[*]The following directories are on the monitor list:");
+        System.out.println("[+]The following directories are on the monitor list:");
         for (Path path : Utilities.getDirectories(false)) {
             System.out.println(path);
         }
@@ -90,6 +88,11 @@ public class HoneypotManager {
      * @param extension the extension which should be used to scan with
      */
     private void scan(String extension) {
+        //Check if the given String is not empty
+        if (extension == null || extension.isEmpty() || extension.trim().isEmpty()) {
+            System.out.println("[+]The given extension to search for is either empty or only consists of whitespace, which makes scanning impossible. Capricorn will now shut down.");
+            System.exit(0);
+        }
         int countEncryptedMain = 0;
         int countNormalMain = 0;
         File folder;
@@ -140,6 +143,7 @@ public class HoneypotManager {
     private void uninstall() {
         Utilities.emptyHoneypots();
         Utilities.removeHoneypotFolders();
+        System.out.println("\n[+]Capricorn has succesfully been uninstalled!");
     }
 
     /**
@@ -147,29 +151,58 @@ public class HoneypotManager {
      */
     private void install() {
         SecureRandom secureRandom = new SecureRandom();
+        //Integer used to keep count of the currently written honeypot folder
+        double progressHoneypotFolders = 0;
 
+        //Loop through every honeypot location
         for (Path honeypotFolder : Utilities.getDirectories(true)) {
+            //Notify the user which folder is being filled
+            System.out.println("[+]Currently writing honeypot files to " + honeypotFolder.toString());
             //Obtain all the extensions from the Library
             List<String> extensions = Library.getExtensionList();
             //Create a string object here to prevent the creation of a new object every loop (extensions.size() * factor)
             String honeypotFileName;
 
             for (int i = 0; i < extensions.size(); i++) { //Loop through all the extensions
-                for (int factor = 0; factor < 10; factor++) { //factor is amount of files created for each extension
+                for (int factor = 0; factor < 15; factor++) { //factor is amount of files created for each extension
                     List<String> fileContent = new ArrayList<>();
                     //Generate new content for every file that is written to the disk
-                    for (int wordCount = 0; wordCount < secureRandom.nextInt(1999) + 1; wordCount++) { //between 1 and 2000 words
+                    for (int wordCount = 0; wordCount < secureRandom.nextInt(2001) + 1000; wordCount++) { //between 1000 and 3000 words
                         fileContent.add(Utilities.getRandomListEntry(Library.getFileContentList()));
                     }
                     honeypotFileName = Utilities.getRandomListEntry(Library.getFileContentList()) + String.valueOf(i) + "-" + String.valueOf(factor) + extensions.get(i);
+
+                    //Write the header of the file
+                    String extension = extensions.get(i);
+                    //The header required for this extension
+                    byte[] header = Library.getHeaderMap().get(extension);
+
+                    //Check if header equalls null (not present in the library) is done in the write function itself, if an error occurs, it is either a permission problem (less likely) or the given header is missing in the library (more likely)
+                    if (!Utilities.writeByteArray(header, honeypotFolder.toString(), honeypotFileName)) {
+                        //Because the header list is not created yet, the error log is currently disabled
+//                        System.out.println("[+]An exception occurred when the file was written to the disk. Check if you have the right permissions to write in the directory (" + honeypotFolder.toString() + ")");
+//                        System.out.println("[+]Capricorn will now exit.");
+                        //Because of the absence of a header list, the exit of the program is currently disabled, this way the files are written the same way was they were before, yet the functionality to write the headers is present for headers that exist
+//                        System.exit(0);
+                    }
+                    //Write the randomly generated content of the file
                     if (!Utilities.writeFile(fileContent, honeypotFolder.toString(), honeypotFileName)) {
-                        System.out.println("[*]An exception occurred when the file was written to the disk. Check if you have the right permissions to write in the directory (" + honeypotFolder.toString() + ")");
-                        System.out.println("[*]Capricorn will now exit.");
+                        System.out.println("[+]An exception occurred when the file was written to the disk. Check if you have the right permissions to write in the directory (" + honeypotFolder.toString() + ")");
+                        System.out.println("[+]Capricorn will now exit.");
                         System.exit(0);
                     }
-
                 }
             }
+            //Calculate the progress percentage, parameter 'false' because we already created the folders
+            double total = Utilities.getDirectories(false).size();
+            //Add one to the current honeypot folders
+            progressHoneypotFolders++;    
+            //Calculate the percentage
+            double percentage = progressHoneypotFolders/total*100;
+            
+            //Display the progress as a percentage to the user, the percentage is casted as an int to only show whole percentages
+            System.out.println("[+]Progress: " + (int)percentage + "%");
+            System.out.println("[+]Finished writing in " + honeypotFolder.toString() + ", moving to the next folder!\n");
         }
     }
 }
